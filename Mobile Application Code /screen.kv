@@ -1,0 +1,1075 @@
+WManager:
+    IntroWindow:
+        id: intro
+        name: "intro"
+    createWindow:
+        id: signup
+        name: "signup"
+    loginWindow:
+        id: login
+        name: "login"
+    homeWindow:
+        id: home
+        name: "home"
+    helpWindow:
+        id: help
+        name: "help"
+    accountWindow:
+        id: account
+        name: "account"
+    editProfile:
+        id: edit
+        name: "edit"
+    historyWindow:
+        id: history
+        name: "history"
+    emotionDisplay:
+        id: emotion
+        name: "emotion"
+    forgotPassword:
+        id: forgotPassword
+        name: "forgotPassword"
+    
+
+<noConnectionPopup>:
+    MDLabel:
+        text:"Warning"
+        color: (0.25, 0.25, 0.3, 1)
+        size_hint: 1, 1
+        text_size: self.size
+        halign:"center"
+        pos_hint: {"x":0.,"y":0.65}
+        font_style:'bold'
+        font_size:'24sp'
+    MDLabel:
+        text: "Please make sure you are connected to the internet to be able to proceed"
+        color: (0.25, 0.25, 0.3, 1)
+        size_hint: 1, 1
+        text_size: self.size
+        halign:"center"
+        pos_hint: {"x":0,"y":0.3}
+        font_size:'18sp'
+
+<noWifi>:
+    title:'Wifi Connection'
+    text:'Please connect to the wifi in order to proceed'
+    size_hint:0.3,0.8
+    pos_hint:{"y":0.35,"x":0.1}
+    # buttons: [MDFlatButton:
+    #         text:'OK']
+
+<IntroWindow>:
+    name:"intro"
+    MDLabel:
+        text: "ELAI"
+        color: (0.25, 0.25, 0.3, 1)
+        size_hint: 1, 1
+        text_size: self.size
+        halign:"center"
+        pos_hint: {"y":0.7}
+        font_size:'72sp'
+    MDLabel:
+        text: "Your Own Emotional \nCompass"
+        color: (0.25, 0.25, 0.3, 1)
+        size_hint: 1, 1
+        text_size: self.size
+        halign:"center"
+        pos_hint: {"y":0.625}
+        font_size:'22sp'
+    MDFillRoundFlatButton:
+        text: 'Sign Up'
+        md_bg_color: (205/256, 232/256, 252/256,1)
+        size_hint: 0.7, 0.12
+        border: 10,10,10,10
+        elevation: 0.01
+        pos_hint: {'x':0.15,'y':0.31}
+        font_size: '32sp'
+        text_color:(0.25, 0.25, 0.3, 1)
+        line_color: (0.45, 0.45, 0.4, 1)
+        on_release: 
+            # app.root.current="forgotPassword" 
+            app.root.current='signup'
+            # app.root.current="history" 
+            #root.manager.transition.direction='up'
+            #root.check_connection()
+            # app.root.current="account" 
+
+    MDFillRoundFlatButton:
+        text: 'Login'
+        md_bg_color: (205/256, 232/256, 252/256,1)
+        size_hint: 0.7, 0.12
+        pos_hint: {'x':0.15,'y':0.18}
+        font_size: '32sp'
+        text_color:(0.25, 0.25, 0.3, 1)
+        line_color: (0.45, 0.45, 0.4, 1)
+        on_release: 
+            app.root.current="login" 
+            # app.root.current='home'
+            root.manager.transition.direction='up'
+    
+<createWindow>:
+    name: 'signup'
+    email: email
+    username: username
+    fullname: fullname
+    day: day
+    month: month
+    year: year
+    passW: passW
+    confirmed: confirmed
+    MDLabel:
+        text: 'Create an Account'
+        font_size: '40sp'
+        size_hint: 1, 1
+        text_size: self.size
+        halign:"left"
+        color:(0, 0.05, 0.1, 0.8)
+        pos_hint:{'x':0.05,'y':0.87}
+    MDLabel:
+        text: 'Full Name'
+        font_size: '21sp'
+        size_hint: 1, 1
+        text_size: self.size
+        halign:"left"
+        color:(0, 0.05, 0.1, 0.8)
+        pos_hint:{'x':0.1,'y':0.77}
+    MDTextField:
+        id: fullname
+        size_hint: 0.8, 0.05
+        pos_hint:{'x':0.1,'y':0.72}
+        multiline: False
+        required: True
+        mode: 'round'
+        font_size: '20sp'
+        fill_color_normal: 0.97, 0.98, 0.99, 1
+        line_color_focus: 0, 0.05, 0.1, 0.6
+        text_color_focus: 0, 0.05, 0.1, 0.8
+        background_color: 1,1,1,1
+    MDLabel:
+        text: 'Email'
+        font_size: '21sp'
+        size_hint: 1, 1
+        text_size: self.size
+        halign:"left"
+        color:(0, 0.05, 0.1, 0.8)
+        pos_hint:{'x':0.1,'y':0.67}
+    MDTextField:
+        id: email
+        size_hint: 0.8, 0.05
+        pos_hint:{'x':0.1,'y':0.62}
+        multiline: False
+        required: True
+        mode: 'round'
+        font_size: '20sp'
+        fill_color_normal: 0.97, 0.98, 0.99, 1
+        line_color_focus: 0, 0.05, 0.1, 0.6
+        text_color_focus: 0, 0.05, 0.1, 0.8
+        helper_text_mode:'on_error'
+        background_color: 1,1,1,1
+        # on_text:
+        #     root.validateEmail()
+    MDLabel:
+        text: 'Date of Birth - dd/mm/yyyy'
+        font_size: '21sp'
+        size_hint: 1, 1
+        text_size: self.size
+        halign:"left"
+        color:(0, 0.05, 0.1, 0.8)
+        pos_hint:{'x':0.1,'y':0.57}
+    MDTextField:
+        id: day
+        size_hint: 0.22, 0.05
+        pos_hint:{'x':0.1,'y':0.52}
+        multiline: False
+        required: True
+        mode: 'round'
+        font_size: '20sp'
+        fill_color_normal: 0.97, 0.98, 0.99, 1
+        max_text_length: 2
+        line_color_focus: 0, 0.05, 0.1, 0.6
+        text_color_focus: 0, 0.05, 0.1, 0.8
+        background_color: 1,1,1,1
+    MDTextField:
+        id: month
+        size_hint: 0.22, 0.05
+        pos_hint:{'x':0.35,'y':0.52}
+        multiline: False
+        required: True
+        mode: 'round'
+        font_size: '20sp'
+        fill_color_normal: 0.97, 0.98, 0.99, 1
+        max_text_length: 2
+        line_color_focus: 0, 0.05, 0.1, 0.6
+        text_color_focus: 0, 0.05, 0.1, 0.8
+        background_color: 1,1,1,1
+    MDTextField:
+        id: year
+        size_hint: 0.3, 0.05
+        pos_hint:{'x':0.6,'y':0.52}
+        multiline: False
+        required: True
+        mode: 'round'
+        fill_color_normal: 0.97, 0.98, 0.99, 1
+        max_text_length: 4
+        font_size: '20sp'
+        line_color_focus: 0, 0.05, 0.1, 0.6
+        text_color_focus: 0, 0.05, 0.1, 0.8
+        background_color: 1,1,1,1
+    MDLabel:
+        text: 'Username'
+        font_size: '21sp'
+        size_hint: 1, 1
+        text_size: self.size
+        halign:"left"
+        color:(0, 0.05, 0.1, 0.8)
+        pos_hint:{'x':0.1,'y':0.47}
+    MDTextField:
+        id: username
+        size_hint: 0.8, 0.05
+        pos_hint:{'x':0.1,'y':0.42}
+        multiline: False
+        required: True
+        font_size: '20sp'
+        mode: 'round'
+        fill_color_normal: 0.97, 0.98, 0.99, 1
+        line_color_focus: 0, 0.05, 0.1, 0.6
+        text_color_focus: 0, 0.05, 0.1, 0.8
+        background_color: 1,1,1,1
+        # on_text_validate:
+        #     root.validate_username()
+    MDLabel:
+        text: 'Password'
+        font_size: '21sp'
+        size_hint: 1, 1
+        text_size: self.size
+        halign:"left"
+        color:(0, 0.05, 0.1, 0.8)
+        pos_hint:{'x':0.1,'y':0.37}
+    MDTextField:
+        id: passW
+        size_hint: 0.8, 0.05
+        pos_hint:{'x':0.1,'y':0.32}
+        multiline: False
+        required: True
+        mode: 'round'
+        fill_color_normal: 0.97, 0.98, 0.99, 1
+        password: True
+        line_color_focus: 0, 0.05, 0.1, 0.6
+        text_color_focus: 0, 0.05, 0.1, 0.8
+        background_color: 1,1,1,1
+        font_size: '20sp'
+        helper_text:''
+        helper_text_mode:'on_error'
+        # on_text_validate:
+        #     root.validPassword()
+    MDIconButton:
+        icon: "eye-off"
+        pos_hint: {"y": 0.32, "x":0.79}
+        theme_icon_color: "Hint"
+        icon_size: '20sp'
+        on_press:
+            self.icon = "eye" if self.icon == "eye-off" else "eye-off"
+            root.showPassw()
+        on_release:
+            self.icon = "eye-off" if self.icon == "eye" else "eye"
+            root.hidePassw()
+    MDLabel:
+        text: 'Confirm Password'
+        font_size: '21sp'
+        size_hint: 1, 1
+        text_size: self.size
+        halign:"left"
+        color:(0, 0.05, 0.1, 0.8)
+        pos_hint:{'x':0.1,'y':0.27}
+    MDTextField:
+        id: confirmed
+        size_hint: 0.8, 0.05
+        pos_hint:{'x':0.1,'y':0.22}
+        multiline: False
+        required: True
+        mode: 'round'
+        font_size: '20sp'
+        fill_color_normal: 0.97, 0.98, 0.99, 1
+        password: True
+        helper_text: ""
+        helper_text_mode: "on_error"
+        line_color_focus: 0, 0.05, 0.1, 0.6
+        text_color_focus: 0, 0.05, 0.1, 0.8
+        background_color: 1,1,1,1
+        # on_text_validate:
+        #     root.match()
+    MDIconButton:
+        icon: "eye-off"
+        pos_hint: {"y": 0.22, "x":0.79 }
+        theme_icon_color: "Hint"
+        icon_size: '20sp'
+        on_press:
+            self.icon = "eye" if self.icon == "eye-off" else "eye-off"
+            root.showPassword()
+        on_release:
+            self.icon = "eye-off" if self.icon == "eye" else "eye"
+            root.hidePassword()
+    MDFillRoundFlatButton:
+        text: 'Create'
+        md_bg_color: (155/256, 182/256, 202/256,1)
+        size_hint: 0.3, 0.08
+        pos_hint: {'x':0.35,'y':0.11}
+        font_size: '26sp'
+        halign: 'center'
+        text_color:(0.97, 0.98, 0.99, 1)
+        line_color: (0.45, 0.45, 0.4, 1)
+        on_release: 
+            # root.create()
+            if root.validate(): \
+            app.root.current="login"; \
+            root.manager.transition.direction='left'
+    MDFillRoundFlatButton:
+        text: 'Already have an account?'
+        md_bg_color: (0,0,0,0)
+        size_hint: 0.48, 0.015
+        pos_hint: {'x':0.26,'y':0.06}
+        font_size: '15sp'
+        text_color: (0.97, 0.98, 0.99, 1)
+        line_color: (0,0,0,0)
+        text_style:'underline'
+        on_release: 
+            app.root.current="login" 
+            root.manager.transition.direction='right'
+
+<loginWindow>:
+    name: 'login'
+    passInput: passInput
+    userInput: userInput
+    MDLabel:
+        text: 'Login to                    Your Account'
+        font_size: '40sp'
+        size_hint: 1, 1
+        text_size: self.size
+        halign:"left"
+        color:(0, 0.05, 0.1, 0.8)
+        pos_hint:{'x':0.1,'y':0.8}
+    MDLabel:
+        text:"Username"
+        font_size: '24sp'
+        size_hint: 1, 1
+        text_size: self.size
+        halign:"left"
+        color:(0, 0.05, 0.1, 0.8)
+        pos_hint:{'x':0.1,'y':0.69}
+    MDTextField:
+        id: userInput
+        size_hint: 0.8, 0.06
+        pos_hint:{'x':0.1,'y':0.63}
+        multiline: False
+        required: True
+        mode: 'round'
+        fill_color_normal: 0.97, 0.98, 0.99, 1
+        icon_left: 'account-circle-outline'
+        icon_left_color: 0, 0.05, 0.1, 0.6
+        line_color_focus: 0, 0.05, 0.1, 0.6
+        text_color_focus: 0, 0.05, 0.1, 0.8
+        background_color: 1,1,1,1
+        font_size: '20sp'
+        on_text_validate:
+            root.confirm_user()
+        # hint_text: 'Enter Username'
+    MDLabel: 
+        text:"Password"
+        font_size: '24sp'
+        size_hint: 1, 1
+        text_size: self.size
+        halign:"left"
+        color:(0, 0.05, 0.1, 0.8)
+        pos_hint:{'x':0.1,'y':0.49}
+    MDTextField:
+        id: passInput
+        size_hint: 0.8, 0.06
+        pos_hint:{'x':0.1,'y':0.43}
+        multiline: False
+        required: True
+        mode: 'round'
+        fill_color_normal: 0.97, 0.98, 0.99, 1
+        icon_left: "key-variant"
+        icon_left_color: 0, 0.05, 0.1, 0.6
+        helper_text: ""
+        helper_text_mode: "on_error"
+        password: True
+        line_color_focus: 0, 0.05, 0.1, 0.6
+        text_color_focus: 0, 0.05, 0.1, 0.8
+        background_color: 1,1,1,1
+        font_size: '20sp'
+    MDIconButton:
+        icon: "eye-off"
+        pos_hint: {"y": 0.433, "x":0.79 }
+        theme_icon_color: "Hint"
+        icon_size: '20sp'
+        on_press:
+            self.icon = "eye" if self.icon == "eye-off" else "eye-off"
+            root.showPassword()
+        on_release:
+            self.icon = "eye-off" if self.icon == "eye" else "eye"
+            root.hidePassword()
+    MDFillRoundFlatButton:
+        text: 'Login'
+        md_bg_color: (155/256, 182/256, 202/256,1)
+        size_hint: 0.3, 0.08
+        pos_hint: {'x':0.35,'y':0.28}
+        font_size: '26sp'
+        text_color:(0.97, 0.98, 0.99, 1)
+        line_color: (0.45, 0.45, 0.4, 1)
+        on_release: 
+            if root.confirm_login() and root.confirm_user(): \
+            root.clearInputs();\
+            app.root.current="home"
+    MDFillRoundFlatButton:
+        text: 'Forgot your password?'
+        md_bg_color: (0,0,0,0)
+        size_hint: 0.48, 0.015
+        pos_hint: {'x':0.26,'y':0.23}
+        font_size: '16sp'
+        text_color: (0.97, 0.98, 0.99, 1)
+        line_color: (0,0,0,0)
+        text_style:'underline'
+        on_release: 
+            app.root.current="forgotPassword"
+            root.manager.transition.direction='left'
+
+<Drawer>:
+    ScrollView:
+        MDList:
+            OneLineListItem:
+                text: "My Account"
+                on_release:
+                    app.root.current="account" 
+            OneLineListItem:
+                text: "Language"
+                # on_release:
+                #     app.root.current="account"
+            OneLineListItem:
+                text: "Show History"
+                on_release:
+                    app.root.get_screen('history').add_history()
+                    app.root.current="history"
+            OneLineListItem:
+                text: "Help"
+                on_release:
+                    app.root.current="help"
+            OneLineListItem:
+                text: "Logout"
+                on_release:
+                    app.root.current="intro"
+                #valign:"bottom"
+                #pos_hint: {'bottom': 1}
+
+<soundWave>:
+    size_hint: 1,1
+    halign: 'center'
+    pos_hint: {"y":0.65}
+    md_bg_color: 0,0,0,0
+    text_color: 0,0,0,0
+
+<homeWindow>:
+    name: "home"
+    status: status
+    on_enter: root.set_username()
+    MDLabel:
+        id: status
+        font_size: '22sp'
+        size_hint: 1, 1
+        text_size: self.size
+        halign:"center"
+        color:(0, 0.05, 0.1, 1)
+        pos_hint:{'y':0.54}
+    MDLabel:
+        text: 'Record Audio'
+        font_size: '18sp'
+        size_hint: 1, 1
+        text_size: self.size
+        halign:"center"
+        color:(0, 0.05, 0.1, 1)
+        pos_hint:{'y':0.48}
+    MDLabel:
+        pos_hint: {"y": 0.6}
+        id: 'status_label'
+        text: ''
+        halign: 'center'
+        font_size: '20sp'
+        size_hint_y: 0.1
+    MDFloatingActionButton:
+        name: 'record_button'
+        id: 'record_button'
+        icon: 'microphone'
+        md_bg_color: 0.97, 0.98, 0.99, 1
+        size_hint: 0.2, 0.1
+        pos_hint:{'x':0.4,'y':0.35}
+        line_color: 0.25, 0.25, 0.3, 1
+        icon_color: 0, 0.05, 0.1, 0.8
+        icon_size: '44sp'
+        elevation: 1
+        on_press: 
+            if root.start_recording():\
+            app.root.current="emotion"
+    MDLabel:
+        text: 'Upload Audio Snippet'
+        font_size: '18sp'
+        size_hint: 1, 1
+        text_size: self.size
+        halign:"center"
+        color:(0, 0.05, 0.1, 1)
+        pos_hint:{'y':0.28}
+    MDFillRoundFlatButton:
+        md_bg_color: 0.97, 0.98, 0.99, 1
+        size_hint: 0.44, 0.1
+        pos_hint:{'x':0.28,'y':0.15}
+        text: 'Upload'
+        color: (0.97, 0.98, 0.99, 1)
+        font_size: '18sp'
+        line_color: 0,0,0,0
+        text_color: 0, 0.05, 0.1, 1
+        elevation: 1
+        on_release: 
+            root.open_fm()
+    Screen:
+        id: top_bar
+        MDTopAppBar:
+            id: top_app_bar
+            pos_hint: {"top": 1}
+            size_hint: 1,0.08
+            elevation: 2
+            # title: root.name
+            md_bg_color: 185/256, 212/256, 228/256,1
+            valign: 'center'
+            specific_text_color: (0.2,0.2,0.3,1)
+            text_size: '60sp'
+            left_action_items: [['menu', lambda x: nav_drawer.set_state("open")]]
+        MDNavigationDrawer:
+            id: nav_drawer
+            md_bg_color: 205/256, 232/256, 252/256,1
+            elevation: 2
+            Drawer:
+    MDGridLayout:
+        id: grid_emotion
+        cols: 1
+        rows: 1
+        size_hint_y: 0.4
+        size_hint_x: 0.9
+        pos_hint: {'y':0.26 , 'x':0.28}
+    # MDGridLayout:
+    #     id: grid_emoticon
+    #     cols: 1
+    #     rows: 1
+    #     size_hint_y: 0.4
+    #     size_hint_x: 0.9
+    #     pos_hint: {'y':.58, 'x':.2}
+    # MDGridLayout:
+    #     id: grid_status
+    #     cols: 1
+    #     rows: 1
+    #     size_hint_y: 0.4
+    #     size_hint_x: 0.9
+    #     pos_hint: {'y':.9, 'x':.06}
+
+<emotionDisplay>:
+    name: "emotion"
+    on_enter: root.display_emotions()
+    MDFloatingActionButton:
+        icon: 'arrow-left-thick'
+        size_hint: 0.1,0.05
+        line_color: (0,0,0,0)
+        md_bg_color: (0,0,0,0)
+        pos_hint: {"x":0.06,"y":0.91}
+        icon_color: (185/256, 212/256, 232/256,1)
+        icon_size: '44sp'
+        elevation: 0.5
+        on_release:
+            app.root.current="home"
+    MDGridLayout:
+        id: grid_emotion
+        cols: 1
+        rows: 1
+        size_hint_y: 0.2
+        size_hint_x: 0.9
+        pos_hint: {'y':0.15}
+    MDGridLayout:
+        id: grid_emoticon
+        cols: 1
+        rows: 1
+        size_hint_y: 0.55
+        size_hint_x: 1
+        size:(root.width, root.width)
+        pos_hint: {'y':.29, 'x': 0.135}
+
+        
+<forgotPassword>:
+    name: 'forgotPassword'
+    user: user
+    newP: newP
+    confirmedP: confirmedP
+    MDLabel:
+        text: 'Reset Your Password'
+        color: (0.25, 0.25, 0.3, 1)
+        size_hint: 1, 1
+        text_size: self.size
+        halign:"center"
+        pos_hint: {"y":0.86}
+        font_size:'36sp'
+    MDLabel:
+        text:"Username"
+        font_size: '24sp'
+        size_hint: 1, 1
+        text_size: self.size
+        halign:"left"
+        color:(0, 0.05, 0.1, 0.8)
+        pos_hint:{'x':0.1,'y':0.71}
+    MDTextField:
+        id: user
+        size_hint: 0.8, 0.06
+        pos_hint:{'x':0.1,'y':0.63}
+        multiline: False
+        required: True
+        mode: 'round'
+        fill_color_normal: 0.97, 0.98, 0.99, 1
+        line_color_focus: 0, 0.05, 0.1, 0.6
+        text_color_focus: 0, 0.05, 0.1, 0.8
+        background_color: 1,1,1,1
+        font_size: '20sp'
+        on_text_validate:
+            root.validateUsername()
+    MDLabel:
+        text:"New Password"
+        font_size: '24sp'
+        size_hint: 1, 1
+        text_size: self.size
+        halign:"left"
+        color:(0, 0.05, 0.1, 0.8)
+        pos_hint:{'x':0.1,'y':0.56}
+    MDTextField:
+        id: newP
+        size_hint: 0.8, 0.06
+        pos_hint:{'x':0.1,'y':0.48}
+        multiline: False
+        required: True
+        mode: 'round'
+        password: True
+        helper_text:''
+        helper_text_mode:'on_error'
+        fill_color_normal: 0.97, 0.98, 0.99, 1
+        line_color_focus: 0, 0.05, 0.1, 0.6
+        text_color_focus: 0, 0.05, 0.1, 0.8
+        background_color: 1,1,1,1
+        font_size: '20sp'
+        on_text_validate:
+            root.validPassword()
+    MDIconButton:
+        icon: "eye-off"
+        pos_hint: {"y": 0.485, "x":0.79}
+        theme_icon_color: "Hint"
+        icon_size: '20sp'
+        on_press:
+            self.icon = "eye" if self.icon == "eye-off" else "eye-off"
+            root.showP()
+        on_release:
+            self.icon = "eye-off" if self.icon == "eye" else "eye"
+            root.hideP()
+    MDLabel:
+        text:"Confirm Password"
+        font_size: '24sp'
+        size_hint: 1, 1
+        text_size: self.size
+        halign:"left"
+        color:(0, 0.05, 0.1, 0.8)
+        pos_hint:{'x':0.1,'y':0.41}
+    MDTextField:
+        id: confirmedP
+        size_hint: 0.8, 0.06
+        pos_hint:{'x':0.1,'y':0.33}
+        multiline: False
+        required: True
+        mode: 'round'
+        password: True
+        helper_text:''
+        helper_text_mode:'on_error'
+        fill_color_normal: 0.97, 0.98, 0.99, 1
+        line_color_focus: 0, 0.05, 0.1, 0.6
+        text_color_focus: 0, 0.05, 0.1, 0.8
+        background_color: 1,1,1,1
+        font_size: '20sp'
+        on_text_validate:
+            root.match()
+    MDIconButton:
+        icon: "eye-off"
+        pos_hint: {'x':0.79,'y':0.335}
+        theme_icon_color: "Hint"
+        icon_size: '20sp'
+        on_press:
+            self.icon = "eye" if self.icon == "eye-off" else "eye-off"
+            root.showPassword()
+        on_release:
+            self.icon = "eye-off" if self.icon == "eye" else "eye"
+            root.hidePassword()
+    MDFillRoundFlatButton:
+        text: 'Reset'
+        md_bg_color: (165/256, 192/256, 212/256,1)
+        size_hint: 0.3, 0.08
+        pos_hint: {'x':0.35,'y':0.20}
+        font_size: '26sp'
+        halign: 'center'
+        text_color:(0.97, 0.98, 0.99, 1)
+        line_color: (0.45, 0.45, 0.4, 1)
+        on_release: 
+            if root.validPassword() and root.validateUsername() and root.match(): \
+            root.changePassword(); \
+            app.root.current="login"; \
+            root.manager.transition.direction='left'
+    MDFloatingActionButton:
+        icon: 'arrow-left-thick'
+        size_hint: 0.1,0.05
+        line_color: (0,0,0,0)
+        md_bg_color: (0,0,0,0)
+        pos_hint: {"x":0.06,"y":0.91}
+        icon_color: (185/256, 212/256, 232/256,1)
+        icon_size: '44sp'
+        elevation: 0.5
+        on_release:
+            app.root.current="login"
+
+<helpWindow>:
+    name:'help'
+    MDLabel:
+        text: 'Help'
+        color: (0.2, 0.2, 0.2, 1)
+        size_hint: 1, 1
+        text_size: self.size
+        pos_hint: {"x":0.2,"y":0.88}
+        font_size:'38sp'
+    MDLabel:
+        font_size: '22sp'
+        text:'''This mobile application was \ndeveloped as a proof of concept \nfor a student graduation project \nunder Princess Sumaya University \nfor Technology. \n \nWe aimed to introduce a new \ntool for autistic individuals in order \nto help identify the emotion within speech in hopes of allowing \neasier navigation through everyday \nlife. \n \nFor any further inquiries and \nassistance, please email us at: \n \nelaigradproject@gmail.com'''
+        color: (1,1,1,1) 
+        pos_hint: {"y":0.05, 'x': 0.065}
+    MDFloatingActionButton:
+        icon: 'arrow-left-thick'
+        size_hint: 0.1,0.05
+        line_color: (0,0,0,0)
+        md_bg_color: (0,0,0,0)
+        pos_hint: {"x":0.08,"y":0.88}
+        icon_color: (0.97, 0.98, 0.99, 1)
+        icon_size: '32sp'
+        elevation: 0.5
+        on_release:
+            app.root.current="home"
+   # MDLabel: ''
+
+<accountWindow>:
+    name: 'account'
+    on_enter: root.update_user_info()
+    MDLabel:
+        text: 'My Account'
+        color: (0.2, 0.2, 0.2, 1)
+        size_hint: 1, 1
+        text_size: self.size
+        pos_hint: {"x":0.2,"y":0.88}
+        font_size:'38sp'
+    MDLabel:
+        text: 'Username'
+        color: (0.2, 0.2, 0.2, 1)
+        size_hint: 1, 1
+        text_size: self.size
+        pos_hint: {"x":0.1,"y":0.77}
+        font_size: '24sp'
+        #font_style:'bold'
+    MDLabel:
+        id: userN
+        text: root.username
+        color: (0.97, 0.98, 0.99, 1)
+        size_hint: 1, 1
+        text_size: self.size
+        pos_hint: {"x":0.1,"y":0.74}
+        font_size: '22sp'
+    MDLabel:
+        text: 'Name'
+        color: (0.2, 0.2, 0.2, 1)
+        size_hint: 1, 1
+        text_size: self.size
+        pos_hint: {"x":0.1,"y":0.69}
+        font_size: '24sp'
+        #font_style:'bold'
+    MDLabel:
+        id: Name
+        text:  root.name
+        color: (0.97, 0.98, 0.99, 1)
+        size_hint: 1, 1
+        text_size: self.size
+        pos_hint: {"x":0.1,"y":0.66}
+        font_size: '22sp'
+    MDLabel:
+        text: 'Email'
+        color: (0.2, 0.2, 0.2, 1)
+        size_hint: 1, 1
+        text_size: self.size
+        pos_hint: {"x":0.1,"y":0.61}
+        font_size: '24sp'
+        #font_style:'bold'
+    MDLabel:
+        id: Email
+        text: root.email
+        color: (0.97, 0.98, 0.99, 1)
+        size_hint: 1, 1
+        text_size: self.size
+        pos_hint: {"x":0.1,"y":0.58}
+        font_size: '22sp'
+    MDLabel:
+        text: 'Date of Birth'
+        color: (0.2, 0.2, 0.2, 1)
+        size_hint: 1, 1
+        text_size: self.size
+        pos_hint: {"x":0.1,"y":0.53}
+        font_size: '24sp'
+        #font_style:'bold'
+    MDLabel:
+        id: DOB
+        text: root.dateOfBirth
+        color: (0.97, 0.98, 0.99, 1)
+        size_hint: 1, 1
+        text_size: self.size
+        pos_hint: {"x":0.1,"y":0.5}
+        font_size: '22sp'
+    # MDLabel:
+    #     text: 'Phone Number'
+    #     color: (0.2, 0.2, 0.2, 1)
+    #     size_hint: 1, 1
+    #     text_size: self.size
+    #     pos_hint: {"x":0.1,"y":0.45}
+    #     font_size: '24sp'
+    #     #font_style:'bold'
+    # MDLabel:
+    #     # text: list(root.info['NewValue']
+    #     color: (0.97, 0.98, 0.99, 1)
+    #     size_hint: 1, 1
+    #     text_size: self.size
+    #     pos_hint: {"x":0.1,"y":0.42}
+    #     font_size: '22sp'
+    MDRoundFlatIconButton:
+        text: 'Change Password'
+        md_bg_color: (0,0,0,0)
+        line_color: (0,0,0,0)
+        font_size: '20sp'
+        pos_hint: {"x":0.04,"y":0.3}
+        text_color: (0.97, 0.98, 0.99, 1)
+        on_release:
+            app.root.current='forgotPassword'
+    MDRoundFlatIconButton:
+        text: 'Edit Profile'
+        md_bg_color: (0,0,0,0)
+        line_color: (0,0,0,0)
+        font_size: '20sp'
+        pos_hint: {"x":0.04,"y":0.26}
+        text_color: (0.97, 0.98, 0.99, 1)
+        on_release:
+            app.root.current='edit'
+    MDRoundFlatIconButton:
+        text: 'Delete Account'
+        md_bg_color: (0,0,0,0)
+        line_color: (0,0,0,0)
+        font_size: '20sp'
+        pos_hint: {"x":0.04,"y":0.04}
+        text_color: (0.97, 0.98, 0.99, 1)
+    MDFloatingActionButton:
+        icon: 'arrow-left-thick'
+        size_hint: 0.1,0.05
+        line_color: (0,0,0,0)
+        md_bg_color: (0,0,0,0)
+        pos_hint: {"x":0.08,"y":0.88}
+        icon_color: (0.97, 0.98, 0.99, 1)
+        icon_size: '32sp'
+        elevation: 0.5
+        on_release:
+            app.root.current="home" 
+
+<editProfile>:
+    name: 'edit'
+    dob: DOB
+    email_address: Email
+    fullname: Name
+    user: userN
+    on_enter: root.update_user_profile()
+    MDLabel:
+        text: 'Edit Account'
+        color: (0.2, 0.2, 0.2, 1)
+        size_hint: 1, 1
+        text_size: self.size
+        pos_hint: {"x":0.1,"y":0.88}
+        font_size:'38sp'
+    MDLabel:
+        text: 'Username'
+        color: (0.97,0.98,0.99,1)
+        size_hint: 1, 1
+        text_size: self.size
+        pos_hint: {"x":0.1,"y":0.77}
+        font_size: '24sp'
+        #font_style:'bold'
+    MDTextField:
+        id: userN
+        hint_text: root.username
+        color: (0.97, 0.98, 0.99, 1)
+        size_hint: 0.8, 0.05
+        text_size: self.size
+        pos_hint: {"x":0.1,"y":0.72}
+        multiline: False
+        background_color: (0.97, 0.98, 0.99, 1)
+        fill_color_normal: (0.97, 0.98, 0.99, 1)
+        mode: 'round'
+        hint_text_color: (0.2,0.2,0.3,0.9)
+        hint_text_size: '22sp'
+    MDLabel:
+        text: 'Name'
+        color: (0.97,0.98,0.99,1)
+        size_hint: 1, 1
+        text_size: self.size
+        pos_hint: {"x":0.1,"y":0.67}
+        font_size: '24sp'
+        #font_style:'bold'
+    MDTextField:
+        id: Name
+        hint_text:  root.name
+        color: (0.97, 0.98, 0.99, 1)
+        size_hint: 0.8, 0.05
+        text_size: self.size
+        pos_hint: {"x":0.1,"y":0.62}
+        multiline: False
+        background_color: (0.97, 0.98, 0.99, 1)
+        fill_color_normal: (0.97, 0.98, 0.99, 1)
+        mode: 'round'
+    MDLabel:
+        text: 'Email'
+        color: (0.97,0.98,0.99,1)
+        size_hint: 1, 1
+        text_size: self.size
+        pos_hint: {"x":0.1,"y":0.57}
+        font_size: '24sp'
+        #font_style:'bold'
+    MDTextField:
+        id: Email
+        hint_text: root.email
+        color: (0.97, 0.98, 0.99, 1)
+        size_hint: 0.8, 0.05
+        text_size: self.size
+        pos_hint: {"x":0.1,"y":0.52}
+        multiline: False
+        background_color: (0.97, 0.98, 0.99, 1)
+        fill_color_normal: (0.97, 0.98, 0.99, 1)
+        mode: 'round'
+    MDLabel:
+        text: 'Date of Birth dd-mm-yyyy'
+        color: (0.97,0.98,0.99,1)
+        size_hint: 1, 1
+        text_size: self.size
+        pos_hint: {"x":0.1,"y":0.47}
+        font_size: '24sp'
+        #font_style:'bold'
+    MDTextField:
+        id: DOB
+        hint_text: root.dateOfBirth
+        color: (0.97, 0.98, 0.99, 1)
+        size_hint: 0.8, 0.05
+        text_size: self.size
+        pos_hint: {"x":0.1,"y":0.42}
+        multiline: False
+        background_color: (0.97, 0.98, 0.99, 1)
+        fill_color_normal: (0.97, 0.98, 0.99, 1)
+        mode: 'round'
+    # MDLabel:
+    #     text: 'Phone Number'
+    #     color: (0.97,0.98,0.99,1)
+    #     size_hint: 1, 1
+    #     text_size: self.size
+    #     pos_hint: {"x":0.1,"y":0.37}
+    #     font_size: '24sp'
+    #     #font_style:'bold'
+    # MDTextField:
+    #     # hint_text: root.info['NewValue'].values())[0]
+    #     color: (0.97, 0.98, 0.99, 1)
+    #     line_color: (0.97, 0.98, 0.99, 1)
+    #     size_hint: 0.8, 0.05
+    #     text_size: self.size
+    #     pos_hint: {"x":0.1,"y":0.32}
+    #     multiline: False
+    #     background_color: (0.97, 0.98, 0.99, 1)
+    #     fill_color_normal: (0.97, 0.98, 0.99, 1)
+    #     mode: 'round'
+    #     pos_hint_text: {0.1,0.5}
+    MDFillRoundFlatButton:
+        text: 'Cancel'
+        md_bg_color: (0.97,0.98,0.99,0.9)
+        line_color: (0,0,0,0)
+        font_size: '20sp'
+        pos_hint: {"x":0.13,"y":0.22}
+        text_color: (0.2,0.2,0.3,1)
+        on_release:
+            app.root.current="account" 
+    MDFillRoundFlatButton:
+        text: 'Confirm'
+        md_bg_color: (0.97,0.98,0.99,0.9)
+        line_color: (0,0,0,0)
+        font_size: '20sp'
+        pos_hint: {"x":0.6,"y":0.22}
+        text_color: (0.2,0.2,0.3,1)
+
+<historyWindow>:
+    name: 'history'
+    MDLabel:
+        text: 'History'
+        color: (0.2, 0.2, 0.2, 1)
+        size_hint: 1, 1
+        text_size: self.size
+        pos_hint: {"x":0.2,"y":0.9}
+        font_size:'38sp'
+    MDFloatingActionButton:
+        icon: 'arrow-left-thick'
+        size_hint: 0.1,0.05
+        line_color: (0,0,0,0)
+        md_bg_color: (0,0,0,0)
+        pos_hint: {"x":0.08,"y":0.9}
+        icon_color: (0.97, 0.98, 0.99, 1)
+        icon_size: '32sp'
+        elevation: 0.5
+        on_release:
+            app.root.current="home"
+    ScrollView:
+    	size_hint: 0.86,0.8
+    	pos_hint: {'x': 0.09, 'y':0.05}
+    	do_scroll_x: False
+    	do_scroll_y: True
+
+    	GridLayout:
+            id: grid
+    		size:(root.width*0.82, root.height*0.8)
+    		size_hint_x: None
+    		size_hint_y: None
+    		cols: 1
+    		height: self.minimum_height
+            row_default_height: root.height*0.8*0.15
+            row_default_width: root.width*0.8
+            spacing: root.height*0.8*0.02
+
+
+    # Logic:
+    # BoxLayout:
+    #     orientation: "vertical"
+    #     BoxLayout:
+    #         size_hint: [1, .8]
+    #         Graph:
+    #             id: graph
+    #             xlabel: ""
+    #             ylabel: "Level"
+    #     BoxLayout:
+    #         size_hint: [1, .2]
+    #         orientation: "horizontal"
+    #         Button:
+    #             text: "START"
+    #             bold: True
+    #             on_press: root.start()
+    #         Button:
+    #             text: "STOP"
+    #             bold: True
+    #             on_press: root.stop()
