@@ -1,0 +1,13 @@
+aws configure
+
+aws configure set aws_session_token
+
+docker build -t lambda-tensorflow:latest .
+
+aws ecr create-repository --repository-name lambda-tensorflow --image-scanning-configuration scanOnPush=true --region us-east-1
+
+docker tag lambda-tensorflow:latest 943742793231.dkr.ecr.us-east-1.amazonaws.com/lambda-tensorflow:latest
+
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 943742793231.dkr.ecr.us-east-1.amazonaws.com
+
+docker push 943742793231.dkr.ecr.us-east-1.amazonaws.com/lambda-tensorflow:latest
