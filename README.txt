@@ -1,9 +1,11 @@
-This github repository is for our graduation project under the name "Speech Emotion Recognition for Individuals with Autism"
+Our graduation project under the name "Speech Emotion Recognition for Individuals with Autism" introduces all the components for our mobile application including the code for the machine learning model, different components in the AWS services, as well as the code used to create the application and integrate all 3 parts.
 
-Done by Leen Dissi, Sara Abbas, Sama Zawaideh under the supervision of Dr. Serin Atiani 
+Done by Leen Dissi, Sara Abbas, Sama Zawaideh under the professional supervision of Dr. Serin Atiani 
 Spring semester 2023 Princess Sumaya University for Technology  
 
-The following link directs you to it:  https://github.com/samazawaideh/GP2_SpeechEmotionRecognition
+The following link directs you to the github repository:  https://github.com/samazawaideh/GP2_SpeechEmotionRecognition
+
+The following is the outline for the repository: 
 
 1. Data
    1.1 DA_Auditory_Objects
