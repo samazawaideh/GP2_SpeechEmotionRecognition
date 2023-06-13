@@ -51,8 +51,6 @@ from keras.models import load_model
 import base64
 
 
-# light sql file on the device
-
 #Window.fullscreen = 'auto'
 #Config.set('graphics', 'width', '420')
 #Config.set('graphics', 'height', '800')
@@ -202,9 +200,6 @@ class createWindow(Screen):
         super().__init__(**kwargs)
         self.add_widget(BackgroundColor())
         self.add_widget(slBoxes())
-        # sm.add_widget(createWindow(name='signup'))
-        # print(self.ids)
-
     def validate_username(self):
         self.dynamodb = session.client('dynamodb')
         params = {'TableName': 'user',
@@ -231,7 +226,6 @@ class createWindow(Screen):
         
     def validPassword(self):
         if len(self.passW.text)>=8 and len(set(self.passW.text)&set(string.ascii_lowercase))>0 and len(set(self.passW.text)&set(string.ascii_uppercase))>0 and len(set(self.passW.text)&set(string.digits))>0:
-            #and len(list(set(self.passW.text)&set(string.punctuation)))>=0
             return True
         else: 
             self.passW.helper_text='Weak Password'
@@ -267,9 +261,6 @@ class createWindow(Screen):
                     now= str(datetime.now())
                     response = dynamodb.scan(**params)
                     items = response.get('Items', [])
-                    # max_value = max(items, key=lambda x: x['userName'])['userName']
-                    # global user_id
-                    # user_id = str(int(max_value['N'])+1)
                     gfg = hashlib.sha3_256()
                     pas = self.passW.text+now
                     gfg.update(pas.encode(encoding = 'UTF-8'))
@@ -312,9 +303,6 @@ class loginWindow(Screen):
         super().__init__(**kwargs)
         self.add_widget(BackgroundColor())
         self.add_widget(slBoxes())
-        # sm.add_widget(loginWindow(name='login'))
-        # print(sm.screens)
-        # sm=app.root.ids.manager
 
     def confirm_user(self):
         self.dynamodb = session.client('dynamodb')
@@ -358,15 +346,7 @@ class loginWindow(Screen):
                 self.passInput.error=True
                 return False
         return False
-    
-    # def set_user(self):
-    # # create grid to fix it
-    #     home, account, edit=homeWindow(), accountWindow(), editProfile()
-    #     # home.ids.users_username.text=self.username
-    #     home.set_username()
-    #     account.update_user_info()
-    #     edit.update_user_profile()
-    #     return True
+
 
 # class soundWave(FigureCanvasKivyAgg):
 #     def __init__(self, **kwargs):
@@ -396,28 +376,12 @@ class homeWindow(Screen):
             icon_color=(155/256, 182/256, 202/256,1),
             background_color_selection_button=(155/256, 182/256, 202/256,1),
             ext=[".mp3", ".pcm", ".wav", ".aac", ".wma", ".m4a"])
-            #,search='files')
     
     def trigger(self):
         audio = self.preprocess_audio(self.recording)
         self.add_processed_to_bucket(audio)
-        # self.predict(self.array)
         self.lambda_function()
         self.add_to_database()
-        # self.add_recording_to_bucket()
-        # print(self.audio.shape, 'trigger')
-        # self.pipeline = Pipeline([('preprocess', FunctionTransformer(self.preprocess_audio)),
-        #                           ('store_processed', FunctionTransformer(self.add_processed_to_bucket)),  
-        #                           ('classify', FunctionTransformer(self.lambda_function)),
-        #                           ('database', FunctionTransformer(self.add_to_database())),
-        #                           ('store_recording', FunctionTransformer(self.add_recording_to_bucket))#,
-                                #   ('dynamo', self.add_to_database(self.info))
-                                #   ])#,
-        # ('lambda', self.lambda_function())])
-        # self.emotion = self.pipeline.transform(self.recording)
-        #self.emotion=
-        # self.pipeline.transform(self.audio)
-        # self.emotion = 0
 
     def add_processed_to_bucket(self, rec):
         rec = np.array(rec).tobytes()
@@ -428,101 +392,43 @@ class homeWindow(Screen):
         # rec_bytes = rec if isinstance(rec, bytes) else rec.encode()
         s3_client.put_object(Body=rec, Bucket= bucket_name, Key=self.file_name)
 
-    # def add_recording_to_bucket(self):
-        # print(self.file_name, 'addrtob')
-        # s3_client = session.client('s3')
-        # bucket_name = 'elai-user-recordings'
-        # # buffer = BytesIO(img)
-        # s3_client.put_object(Body=self.recording.tobytes(), Bucket= bucket_name, Key=self.file_name)
-        # return
 
     def add_to_database(self):
         # return
         dynamodb_client = session.client('dynamodb')
         table_name = 'user-recordings'
-        key = {
-            'recordingID': {'S': self.file_name} #,
-            # 'your_sort_key': {'N': 'your_sort_key_value'}
-            }
+        # key = {
+        #     'recordingID': {'S': self.file_name}}
         record = {'recordingID': {'S': self.file_name}, 
                             'date': {'S': self.date}, 
                             'time': {'S': self.time}, 
-                            'duration': {'S': '5'},
+                            'duration': {'S': '3'},
                             'emotion': {'S': self.emotion}
                 }
         dynamodb_client.put_item(TableName=table_name, Item=record)
-        # response = dynamodb_client.get_item(TableName=table_name,Key=key)
-        # print(response['Item'])
-        # userDict = response['Item']
-        # print(list[userDict.values()])
 
-    # def preprocess_audio(self, audio):
-    #     data=[]
-    #     audio = np.array(self.recording)
-    #     audio = audio.reshape(1, -1) 
-    #     mfcc = librosa.feature.mfcc(y=audio, sr=44100 , n_mfcc=13)
-    #     mfcc = np.mean(mfcc, axis=0)
-    #     spectrogram = librosa.feature.melspectrogram(y=audio, sr=44100 , n_mels=128, fmax=8000) 
-    #     log_spectrogram = np.mean(librosa.power_to_db(spectrogram), axis=0)
-    #     chroma = np.mean(librosa.feature.chroma_stft(y=audio, sr=44100), axis=0)
-    #     zcr = np.mean(librosa.feature.zero_crossing_rate(y=audio), axis=0)
-    #     rmse = np.mean(librosa.feature.rms(y=audio), axis=0)
-    #     data = [mfcc, log_spectrogram, chroma, zcr, rmse]
-    #     array = np.array(data)
-    #     array = np.transpose(array) 
-    #     self.array = [np.mean(array[i], axis=0).tolist() for i in range(len(array))]
-        # self.array = np.array(self.array).reshape([1,397,5])
-        # array= np.array(self.array).tobytes()
-        # print(bytes_data)
-        # byte_list = [bytes(x) for x in array]
-        # bytes_data =  b''.join(byte_list)        
-        # return self.array
-    
-    # def predict(self, processed):
-    #     s3 = session.client('s3')
-    #     m_Bucket = 'elai-processed-recordings'
-    #     m_Name = 'model-1DCNN.h5'
-    #     m = s3.get_object(Bucket=m_Bucket, Key=m_Name)['Body'].read()
-    #     buffer = BytesIO(m)
-    #     with tempfile.NamedTemporaryFile(suffix='.h5', delete=False) as temp_file:
-    #         temp_file.write(buffer.getvalue())
-    #         temp_file_path = temp_file.name
-    #     model = load_model(temp_file_path, compile=False)
-    #     temp_file.close()
-    #     prediction = np.argmax(model.predict(processed))
-    #     return prediction
+    def preprocess_audio(self, audio):
+        scale , sr = librosa.load(audio, sr = 22050) 
+        D = librosa.amplitude_to_db(np.abs(librosa.stft(scale, hop_length=512)), ref=np.max)
+        with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmpfile:
+            img = librosa.display.specshow(D, y_axis='log', sr=sr, hop_length=512, x_axis='time')
+            plt.axis('off')
+            plt.savefig(tmpfile.name, bbox_inches='tight')
+            plt.close()
+            image = cv2.imread(tmpfile.name)
+            self.array = cv2.resize(image,(256,256))
 
     def lambda_function(self):
-        # event = {}
-        # event.update({"one": self.array[0]})
-        # event.update({"two": self.array[1]})
-        # event.update({"three": self.array[2]})
-        # event.update({"four": self.array[3]})
-        # event.update({"five": self.array[4]})
-
-        # json_str = json.dumps(event)
-        # bytes_data = json_str.encode('utf-8')
-        # encrypted_data = base64.b64encode(bytes_data).decode('utf-8')
-        # print(encrypted_data)
-        # event = {"filename": str(self.file_name), "payload": encrypted_data}
-    
-        # encrypted_data = base64.b64encode(event).decode("utf-8")
-        # event={"filename": str(self.file_name)}
-        event = {}
-        event.update({"one": self.array[0]})
-        event.update({"two": self.array[1]})
-        event.update({"three": self.array[2]})
-        event.update({"four": self.array[3]})
-        event.update({"five": self.array[4]})
+        event = [self.array[i].tolist() for i in range(len(self.array))]
         json_str = json.dumps(event)
         bytes_data = json_str.encode('utf-8')
         encrypted_data = base64.b64encode(bytes_data).decode('utf-8')
-
         lambda_client = session.client('lambda')
         response = lambda_client.invoke(
-            FunctionName='classification',
-            Payload=json.dumps({"data":encrypted_data}),
+            FunctionName='classify',
+            Payload=json.dumps({"data": encrypted_data})
         )
+        event = json.dumps({"data": encrypted_data})
         if response['StatusCode'] == 200:
             lambda_response = json.loads(response['Payload'].read().decode('utf-8'))
             print(lambda_response['body'])
@@ -540,9 +446,9 @@ class homeWindow(Screen):
         self.FM.show(self.path)
 
     def select_path(self, path:str):
-        print(path)
         self.audio = path
-        self.classify_upload()
+        self.recording = librosa.load(path, duration=3, sr=22050)[0]
+        self.trigger()
         self.close_fm()
     
     def close_fm(self, *args):
@@ -556,7 +462,6 @@ class homeWindow(Screen):
             pass
 
     def start_recording(self):
-        # self.remove_widgets()
         sample_rate = 22050
         duration= 5
         x=datetime.now()
@@ -574,33 +479,7 @@ class homeWindow(Screen):
         s3_client.put_object(Body=recording_buffer, Bucket=bucket_name, Key=self.file_name)
         self.recording = self.recording[17640:]
         self.trigger()
-        # self.emotion_list=['Neutral','Happy','Sad','Anger','Fear','Disgust']
-        # self.emoticons=['emoticon-happy-outline','emoticon-excited-outline','emoticon-sad-outline','emoticon-angry-outline','emoticon-frown-outline','emoticon-sick/neutral-outline']
-        # self.emotion_icon = self.emoticons[self.emotion]
-        # self.emotionButton=MDRoundFlatIconButton(icon=self.emotion_icon, size_hint=(0.8,width*0.8), md_bg_color=(0,0,0,0), line_color=(0,0,0,0), icon_color=(0.1,0.1,0.2,1), icon_size='240sp')
-        # self.emotionOutput=MDRoundFlatIconButton(text=self.emotion_list[self.emotion],font_size='44sp',size_hint_x=(0.8), md_bg_color=(0,0,0,0),  line_color=(0,0,0,0), text_color=(0.1,0.1,0.2,1), halign='center')
-        # self.ids.grid_emoticon.add_widget(self.emotionButton)
-        # self.ids.grid_emotion.add_widget(self.emotionOutput)
-        # print(self.emotion)
-        # emotion = self.emotion
-        # self.emotion_list=["Anger", "Disgust", "Fear", "Happy", "Neutral", "Sad","Surprise","Calm"]
-        # self.emoticons=['emoticon-angry-outline', 'emoticon-sick-outline', 'emoticon-excited-outline', 'emoticon-neutral-outline' ,'emoticon-sad-outline','emoticon-frown-outline','emoticon-happy-outline']
-        # self.emotion_icon = self.emoticons[emotion]
-        # self.emotionButton=MDRoundFlatIconButton(icon=self.emotion_icon, size_hint=(0.8,width*0.8), md_bg_color=(0,0,0,0), line_color=(0,0,0,0), icon_color=(0.1,0.1,0.2,1), icon_size='240sp', z=0)
-        # self.emotionOutput=MDRoundFlatIconButton(text=self.emotion_list[emotion],font_size='44sp',size_hint_x=(0.8), md_bg_color=(0,0,0,0),  line_color=(0,0,0,0), text_color=(0.1,0.1,0.2,1), halign='center', z=0)
-        # self.ids.grid_emoticon.add_widget(self.emotionButton)
-        # self.ids.grid_emotion.add_widget(self.emotionOutput)
         return True
-    
-    # def classify_upload(self):
-        # self.trigger()
-        # self.emotion_list=['Neutral','Happy','Sad','Anger','Fear','Disgust']
-        # self.emoticons=['emoticon-happy-outline','emoticon-excited-outline','emoticon-sad-outline','emoticon-angry-outline','emoticon-frown-outline','emoticon-sick/neutral-outline']
-        # self.emotion_icon = self.emoticons[self.emotion]
-        # self.emotionButton=MDRoundFlatIconButton(icon=self.emotion_icon, size_hint=(0.8,width*0.8), md_bg_color=(0,0,0,0), line_color=(0,0,0,0), icon_color=(0.1,0.1,0.2,1), icon_size='240sp')
-        # self.emotionOutput=MDRoundFlatIconButton(text=self.emotion_list[self.emotion],font_size='44sp',size_hint_x=(0.8), md_bg_color=(0,0,0,0),  line_color=(0,0,0,0), text_color=(0.1,0.1,0.2,1), halign='center')
-        # self.ids.grid_emoticon.add_widget(self.emotionButton)
-        # self.ids.grid_emotion.add_widget(self.emotionOutput)
     
     name = ''
     
@@ -797,33 +676,14 @@ class forgotPassword(Screen):
         if self.confirmedP.password == False:
             self.confirmedP.password = True
 
-#represents the transitions between windows
 class WManager(ScreenManager):
     pass
-
 
 class screenApp(MDApp):
     def build(self):
         Builder.load_file('screen.kv')
         Window.size = (width, height)
-        # sm= ScreenManager()
-        # sm.add_widget(IntroWindow(name ="intro"))
-        # sm.add_widget(createWindow(name ="signup"))
-        # sm.add_widget(loginWindow(name ="login"))
-        # sm.add_widget(homeWindow(name ="home"))
-        # sm.add_widget(helpWindow(name ="help"))
-        # sm.add_widget(accountWindow(name ="account"))
-        # sm.add_widget(historyWindow(name ="history"))
-        # sm.add_widget(forgotPassword(name ="forgotPassword"))
-        # sm.add_widget(editProfile(name ="edit"))
         # Window.softinput_mode = 'below_target'
-        # sm=WManager()
-        # screens=['account','help','forgotPassword','signup','login','account','edit','intro','home','history','help']
-        # for i in range(len(screens)):
-        #     screen = Screen(name=screens[i])
-        #     sm.add_widget(screen)
-        # sm.add_widget(loginWindow(name='login'))
-        # print(sm.screens)
         return 
 
 if __name__ == '__main__':
