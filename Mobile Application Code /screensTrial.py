@@ -350,7 +350,7 @@ class homeWindow(Screen):
         self.path=os.path.expanduser("~") or os.path.expanduser("/")
         self.FM= MDFileManager(
             select_path=self.select_path,
-            exit_manager=self.close_fm,
+            # exit_manager=self.close_fm,
             selector='file',
             background_color_toolbar=(155/256, 182/256, 202/256,1),
             md_bg_color=(0.97, 0.98, 0.99, 1),
@@ -426,11 +426,18 @@ class homeWindow(Screen):
         self.audio = path
         self.recording = librosa.load(path, duration=3, sr=22050)[0]
         self.from_manager=True
-        self.manager.current='home'
+        self.FM.close()
+        # self.manager.current='emotion'
+        self.classify_upload()
+        self.manager.current='emotion'
+        # self.manager.current='home'
         # self.FM.close()
     
-    def close_fm(self, *args):
-        self.FM.close()
+    # def close_fm(self, *args):
+    #     self.FM.close()
+    #     return True
+    
+    def classify_upload(self):
         if self.from_manager==True:
             x=datetime.now()
             self.user = loginWindow.username
