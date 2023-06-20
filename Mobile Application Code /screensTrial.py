@@ -1,12 +1,7 @@
-import wave, threading, string,tempfile, pyaudio, audioop, socket, kivy, kivymd, os, time, datetime as dt, sys, matplotlib, cv2, requests, hashlib
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler, FunctionTransformer
-import boto3, librosa, matplotlib.pyplot as plt, numpy as np
-from sklearn.linear_model import LogisticRegression
-import json
+import string,tempfile, base64,socket, kivy, kivymd, os,sounddevice as sd,soundfile as sf, datetime as dt, matplotlib, cv2, requests, hashlib, boto3, librosa, matplotlib.pyplot as plt, numpy as np, json, librosa.display, firebase_admin
 from io import BytesIO
-import matplotlib.pyplot as plt
-import librosa, librosa.display
+from firebase_admin import credentials, db
+
 #builder that allows loading any kv app no matter the name
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
@@ -26,36 +21,24 @@ from kivymd.uix.filemanager import MDFileManager
 from kivymd.uix.dialog import MDDialog
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from kivy.core.audio import SoundLoader
-import sounddevice as sd
-import soundfile as sf
 from kivy.clock import Clock
 from datetime import date, datetime
-import numpy as np
 from kivy.core.audio import Sound
-import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from kivymd.uix.relativelayout import RelativeLayout
 from kivymd.uix.card import MDCard
 from kivy.properties import ObjectProperty, ListProperty, DictProperty
-# from kivy.garden.matplotlib import FigureCanvasKivyAgg
-# from kivy_garden.graph import Graph, MeshLinePlot
-# from validate_email import validate_email
 from email_validator import validate_email, EmailNotValidError
-# from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 from kivy.metrics import dp, sp
-# import screeninfo
-import multiprocessing
 from kivy.config import Config
 from kivymd.app import MDApp
-from keras.models import load_model
-import base64
 
 
 #Window.fullscreen = 'auto'
 #Config.set('graphics', 'width', '420')
 #Config.set('graphics', 'height', '800')
 # Config.set('kivy', 'keyboard_mode', 'systemanddock')
-Config.set('graphics', 'resizable', True)
+Config.set('graphics', 'resizable', False)
 # width = screeninfo.get_monitors()[0].width
 # height = screeninfo.get_monitors()[0].height 
 
@@ -164,10 +147,6 @@ class IntroWindow(Screen):
         self.add_widget(mainBox())
 
 
-
-import firebase_admin
-from firebase_admin import credentials, db
-
 cred = credentials.Certificate({
   "type": "service_account",
   "project_id": "access-elai",
@@ -259,8 +238,8 @@ class createWindow(Screen):
                         'Limit': 1,
                     }
                     now= str(datetime.now())
-                    response = dynamodb.scan(**params)
-                    items = response.get('Items', [])
+                    # response = dynamodb.scan(**params)
+                    # items = response.get('Items', [])
                     gfg = hashlib.sha3_256()
                     pas = self.passW.text+now
                     gfg.update(pas.encode(encoding = 'UTF-8'))
@@ -360,17 +339,19 @@ class homeWindow(Screen):
     file_name = ''
     date = ''
     time = ''
-    emotion = 3
+    # emotion = 3
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.add_widget(BackgroundColor())
         self.add_widget(bottomCornerBox2())
         self.add_widget(homeBox())
+        self.from_manager=False
         # self.add_widget(soundWave())
         self.path=os.path.expanduser("~") or os.path.expanduser("/")
         self.FM= MDFileManager(
             select_path=self.select_path,
             exit_manager=self.close_fm,
+            selector='file',
             background_color_toolbar=(155/256, 182/256, 202/256,1),
             md_bg_color=(0.97, 0.98, 0.99, 1),
             icon_color=(155/256, 182/256, 202/256,1),
@@ -378,6 +359,7 @@ class homeWindow(Screen):
             ext=[".mp3", ".pcm", ".wav", ".aac", ".wma", ".m4a"])
     
     def trigger(self):
+        # self.close_fm()
         audio = self.preprocess_audio(self.recording)
         self.add_processed_to_bucket(audio)
         self.lambda_function()
@@ -394,7 +376,6 @@ class homeWindow(Screen):
 
 
     def add_to_database(self):
-        # return
         dynamodb_client = session.client('dynamodb')
         table_name = 'user-recordings'
         # key = {
@@ -403,15 +384,14 @@ class homeWindow(Screen):
                             'date': {'S': self.date}, 
                             'time': {'S': self.time}, 
                             'duration': {'S': '3'},
-                            'emotion': {'S': self.emotion}
+                            'emotion': {'S': str(homeWindow.emotion)}
                 }
         dynamodb_client.put_item(TableName=table_name, Item=record)
 
     def preprocess_audio(self, audio):
-        scale , sr = librosa.load(audio, sr = 22050) 
-        D = librosa.amplitude_to_db(np.abs(librosa.stft(scale, hop_length=512)), ref=np.max)
+        D = librosa.amplitude_to_db(np.abs(librosa.stft(audio, hop_length=512)), ref=np.max)
         with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmpfile:
-            img = librosa.display.specshow(D, y_axis='log', sr=sr, hop_length=512, x_axis='time')
+            img = librosa.display.specshow(D, y_axis='log', sr=22050, hop_length=512, x_axis='time')
             plt.axis('off')
             plt.savefig(tmpfile.name, bbox_inches='tight')
             plt.close()
@@ -433,14 +413,11 @@ class homeWindow(Screen):
             lambda_response = json.loads(response['Payload'].read().decode('utf-8'))
             print(lambda_response['body'])
             try: 
-                dic = json.loads(lambda_response['body'])
-                val = dic.keys()[-1]
-                # print(lambda_response['body']['prediction class'])
-                self.emotion= dic[val]
-                print("emotion from lambda")
+                prediction_class = int(str(lambda_response)[-4:-3])
+                homeWindow.emotion= prediction_class
+                print("emotion from lambda", homeWindow.emotion)
             except:
-                self.emotion=0
-            # self.emotion = int(json.loads(lambda_response['body'])['prediction class'])
+                homeWindow.emotion=0
 
     def open_fm(self):
         self.FM.show(self.path)
@@ -448,11 +425,24 @@ class homeWindow(Screen):
     def select_path(self, path:str):
         self.audio = path
         self.recording = librosa.load(path, duration=3, sr=22050)[0]
-        self.trigger()
-        self.close_fm()
+        self.from_manager=True
+        self.manager.current='home'
+        # self.FM.close()
     
     def close_fm(self, *args):
         self.FM.close()
+        if self.from_manager==True:
+            x=datetime.now()
+            self.user = loginWindow.username
+            s3 = session.client('s3')
+            bucket_name = 'elai-user-recordings'
+            self.rec_time, self.date, self.time = str(x.strftime("%d%m%y%H%M%S")),str(x.strftime("%d/%m/%y")),str(x.strftime("%H:%M:%S")) 
+            key_name = str(str(self.user) + self.rec_time)
+            self.file_name = key_name
+            s3.put_object(Body=self.recording.tobytes(), Bucket=bucket_name, Key=self.file_name)
+            self.trigger()
+        else:
+            pass
 
     def remove_widgets(self):
         try:
@@ -463,7 +453,7 @@ class homeWindow(Screen):
 
     def start_recording(self):
         sample_rate = 22050
-        duration= 5
+        duration= 3
         x=datetime.now()
         self.user = loginWindow.username
         self.rec_time, self.date, self.time = str(x.strftime("%d%m%y%H%M%S")),str(x.strftime("%d/%m/%y")),str(x.strftime("%H:%M:%S")) 
@@ -477,7 +467,8 @@ class homeWindow(Screen):
         sf.write(recording_buffer, self.recording, sample_rate, format='wav')
         recording_buffer.seek(0)
         s3_client.put_object(Body=recording_buffer, Bucket=bucket_name, Key=self.file_name)
-        self.recording = self.recording[17640:]
+        self.recording = self.recording.flatten()
+        self.from_manager=False
         self.trigger()
         return True
     
@@ -506,6 +497,13 @@ class emotionDisplay(Screen):
         self.add_widget(BackgroundColor())
         self.add_widget(bottomCornerBox2())
         self.add_widget(emotionCircle())
+    def clear_widgets(self):
+        try:
+            self.ids.grid_emotion.remove_widget(self.emotionOutput)
+            self.ids.grid_emoticon.remove_widget(self.emotionButton)
+            return True
+        except:
+            return False
     def display_emotions(self):
         self.emotion=homeWindow.emotion
         self.emotion_list=['Neutral','Happy','Sad','Anger','Fear','Disgust']
@@ -532,33 +530,6 @@ class accountWindow(Screen):
         self.add_widget(BackgroundBox())
     name,username, email, dateOfBirth = '','','',''
     def update_user_info(self):
-        print(self.manager.screens)
-        try:
-            userN=loginWindow.username
-        except:
-            userN='empty'
-        dynamodb = session.client('dynamodb')
-        params = {'TableName': 'user',
-                    'Key': {'userName': {'S': userN}}}
-        response = dynamodb.get_item(**params)
-        item = response.get('Item', {})
-        self.name = item.get('fullName', {}).get('S', 'unknown')
-        self.username = item.get('userName', {}).get('S', 'unknown')
-        self.email = item.get('email', {}).get('S', 'unknown')
-        self.dateOfBirth = item.get('dateOfBirth', {}).get('S', 'unknown')
-        self.ids.userN.text= userN
-        self.ids.Name.text = self.name
-        self.ids.Email.text = self.email
-        self.ids.DOB.text = self.dateOfBirth
-
-class editProfile(Screen):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.add_widget(BackgroundColor())
-        self.add_widget(bottomCornerBox())
-        self.add_widget(BackgroundBox())
-    name,username, email, dateOfBirth = '','','',''
-    def update_user_profile(self):
         try:
             userN=loginWindow.username
         except:
@@ -576,8 +547,87 @@ class editProfile(Screen):
         self.ids.Name.text = name
         self.ids.Email.text = self.email
         self.ids.DOB.text = self.dateOfBirth
+    def set_option_yes(self, option):
+            try:
+                userN=loginWindow.username
+            except:
+                userN='empty'
+            self.ids.notice.clear_widgets()
+            self.ids.options.clear_widgets()
+            dynamodb = session.client('dynamodb')
+            params = {'TableName': 'user', 'Key': {'userName': {'S': userN}}}
+            self.manager.current='intro'
+            dynamodb.delete_item(**params)
+    def set_option_no(self, option):
+            self.ids.notice.clear_widgets()
+            self.ids.options.clear_widgets()
+    def delete_user(self):
+        self.option_check = MDFloatingActionButton(icon='check-circle-outline', icon_color=(134/256, 162/256, 182/256,9), halign='center', icon_size='40sp', md_bg_color=(1,1,1,1), pos_hint = {'col': 0})
+        self.option_check.bind(on_release=self.set_option_yes)
+        self.option_close = MDFloatingActionButton(icon='close-circle-outline', icon_color=(134/256, 162/256, 182/256,9), halign='center', icon_size='40sp', md_bg_color=(1,1,1,1), pos_hint = {'col': 1})
+        self.option_close.bind(on_release=self.set_option_no)
+        self.ids.notice.add_widget(MDLabel(text=' Are you sure you want to delete your account? \nThis action cannot be undone.'
+                                           ,font_size='26sp', color=(1,1,1,1), halign='center', size_hint=(0.99, 0.09), text_color=(1,1,1,1)))
+        self.ids.options.add_widget(self.option_check)
+        self.ids.options.add_widget(self.option_close)
+
+
+class editProfile(Screen):
+    dob,email_address,fullname,user = ObjectProperty(str),ObjectProperty(str),ObjectProperty(str),ObjectProperty(str)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.add_widget(BackgroundColor())
+        self.add_widget(bottomCornerBox())
+        self.add_widget(BackgroundBox())
+    name,username, email, dateOfBirth = '','','',''
+    def update_user_profile(self):
+        try:
+            userN=loginWindow.username
+        except:
+            userN='empty'
+        dynamodb = session.client('dynamodb')
+        params = {'TableName': 'user', 'Key': {'userName': {'S': userN}}}
+        response = dynamodb.get_item(**params)
+        item = response.get('Item', {})
+        name = item.get('fullName', {}).get('S', 'unknown')
+        self.username = item.get('userName', {}).get('S', 'unknown')
+        self.Email = item.get('email', {}).get('S', 'unknown')
+        self.dateOfBirth = item.get('dateOfBirth', {}).get('S', 'unknown')
+        self.country = item.get('country', {}).get('S', 'unknown')
+        self.fn = item.get('FullName', {}).get('S', 'unknown')
+        self.passw = item.get('password', {}).get('S', 'unknown')
+        self.reg = item.get('registrationDate&Time', {}).get('S', 'unknown')
+        self.ids.userN.hint_text= userN
+        self.ids.Name.hint_text = name
+        self.ids.Email.hint_text = self.email
+        self.ids.DOB.hint_text = self.dateOfBirth
+    
     def change_user_profile(self):
-        pass
+        try:
+            userN=loginWindow.username
+        except:
+            userN='empty'
+        if self.dob.text =='': 
+            self.dob = self.dateOfBirth
+        if self.email_address.text =='': 
+            self.email_address = self.Email
+        if self.fullname.text =='': 
+            self.fullname = self.fn
+        if self.user.text =='': 
+            self.user = self.username
+        dynamodb = session.client('dynamodb')
+        params = {'TableName': 'user', 'Key': {'userName': {'S': userN}}}
+        info = {'city': {'S': self.user}, 
+                            'country': {'S': self.country}, 
+                            'dateOfBirth': {'S': self.dateOfBirth}, 
+                            'email': {'S': self.email.text}, 
+                            'fullName': {'S': self.fullname.text},
+                            'password': {'S': self.password}, 
+                            'registrationDate&Time': {'S': self.reg}, 
+                            'userName': {'S': self.user.text}}
+        dynamodb.delete_item(**params)
+        dynamodb.put_item(TableName='user', Item=info)
+        
 
 class CardItem(RelativeLayout):
     size_hint_y = None
@@ -681,7 +731,7 @@ class WManager(ScreenManager):
 
 class screenApp(MDApp):
     def build(self):
-        Builder.load_file('screen.kv')
+        # Builder.load_file('screen.kv')
         Window.size = (width, height)
         # Window.softinput_mode = 'below_target'
         return 
