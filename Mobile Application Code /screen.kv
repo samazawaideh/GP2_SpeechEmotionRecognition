@@ -104,7 +104,7 @@ WManager:
         line_color: (0.45, 0.45, 0.4, 1)
         on_release: 
             app.root.current="login" 
-            # app.root.current='home'
+            # app.root.current='account'
             root.manager.transition.direction='up'
     
 <createWindow>:
@@ -433,6 +433,18 @@ WManager:
         on_release: 
             app.root.current="forgotPassword"
             root.manager.transition.direction='left'
+    MDFillRoundFlatButton:
+        text: 'Create Account'
+        md_bg_color: (0,0,0,0)
+        size_hint: 0.48, 0.015
+        pos_hint: {'x':0.26,'y':0.19}
+        font_size: '16sp'
+        text_color: (0.97, 0.98, 0.99, 1)
+        line_color: (0,0,0,0)
+        text_style:'underline'
+        on_release: 
+            app.root.current="signup"
+            root.manager.transition.direction='left'
 
 <Drawer>:
     ScrollView:
@@ -582,6 +594,7 @@ WManager:
         icon_size: '44sp'
         elevation: 0.5
         on_release:
+            if root.clear_widgets():\
             app.root.current="home"
     MDGridLayout:
         id: grid_emotion
@@ -854,7 +867,7 @@ WManager:
         md_bg_color: (0,0,0,0)
         line_color: (0,0,0,0)
         font_size: '20sp'
-        pos_hint: {"x":0.04,"y":0.3}
+        pos_hint: {"x":0.04,"y":0.4}
         text_color: (0.97, 0.98, 0.99, 1)
         on_release:
             app.root.current='forgotPassword'
@@ -863,7 +876,7 @@ WManager:
         md_bg_color: (0,0,0,0)
         line_color: (0,0,0,0)
         font_size: '20sp'
-        pos_hint: {"x":0.04,"y":0.26}
+        pos_hint: {"x":0.04,"y":0.36}
         text_color: (0.97, 0.98, 0.99, 1)
         on_release:
             app.root.current='edit'
@@ -874,6 +887,8 @@ WManager:
         font_size: '20sp'
         pos_hint: {"x":0.04,"y":0.04}
         text_color: (0.97, 0.98, 0.99, 1)
+        on_release:
+            root.delete_user()
     MDFloatingActionButton:
         icon: 'arrow-left-thick'
         size_hint: 0.1,0.05
@@ -885,6 +900,25 @@ WManager:
         elevation: 0.5
         on_release:
             app.root.current="home" 
+    MDGridLayout:
+        id: notice
+        cols: 1
+        rows: 1
+        size_hint_y: 0.1
+        size_hint_x: 1
+        size:(root.width, root.height*0.1)
+        pos_hint: {'y':.22}
+    MDGridLayout:
+        id: options
+        cols: 2
+        rows: 1
+        spacing: [80,0]
+        size_hint_y: 0.1
+        size_hint_x: 1
+        pos_hint: {'y':.12, 'x': 0.23}
+
+    
+    
 
 <editProfile>:
     name: 'edit'
@@ -978,26 +1012,6 @@ WManager:
         background_color: (0.97, 0.98, 0.99, 1)
         fill_color_normal: (0.97, 0.98, 0.99, 1)
         mode: 'round'
-    # MDLabel:
-    #     text: 'Phone Number'
-    #     color: (0.97,0.98,0.99,1)
-    #     size_hint: 1, 1
-    #     text_size: self.size
-    #     pos_hint: {"x":0.1,"y":0.37}
-    #     font_size: '24sp'
-    #     #font_style:'bold'
-    # MDTextField:
-    #     # hint_text: root.info['NewValue'].values())[0]
-    #     color: (0.97, 0.98, 0.99, 1)
-    #     line_color: (0.97, 0.98, 0.99, 1)
-    #     size_hint: 0.8, 0.05
-    #     text_size: self.size
-    #     pos_hint: {"x":0.1,"y":0.32}
-    #     multiline: False
-    #     background_color: (0.97, 0.98, 0.99, 1)
-    #     fill_color_normal: (0.97, 0.98, 0.99, 1)
-    #     mode: 'round'
-    #     pos_hint_text: {0.1,0.5}
     MDFillRoundFlatButton:
         text: 'Cancel'
         md_bg_color: (0.97,0.98,0.99,0.9)
